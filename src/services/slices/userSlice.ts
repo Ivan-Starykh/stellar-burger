@@ -1,3 +1,4 @@
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import {
   registerUserApi,
   loginUserApi,
@@ -7,10 +8,10 @@ import {
   TRegisterData,
   TLoginData
 } from '@api';
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { TUser } from '@utils-types';
 import { deleteCookie, setCookie } from '../../utils/cookie';
 
+// Создание асинхронных thunk'ов для различных операций
 export const fetchRegisterUser = createAsyncThunk(
   'register/fetchRegisterUser',
   async (data: TRegisterData) =>
@@ -45,6 +46,7 @@ export const fetchLogout = createAsyncThunk('logout/fetchLogout', async () =>
   })
 );
 
+// Типизация состояния аутентификации
 type TAuthState = {
   isAuthenticated: boolean;
   data: TUser;
@@ -52,16 +54,15 @@ type TAuthState = {
   loginUserRequest: boolean;
 };
 
+// Начальное состояние
 const initialState: TAuthState = {
   isAuthenticated: false,
-  data: {
-    name: '',
-    email: ''
-  },
+  data: { name: '', email: '' },
   error: undefined,
   loginUserRequest: false
 };
 
+// Создание слайса для аутентификации пользователя
 const userSlice = createSlice({
   name: 'auth',
   initialState,
@@ -76,7 +77,7 @@ const userSlice = createSlice({
     selectError: (state) => state.error,
     selectloginRequest: (state) => state.loginUserRequest
   },
-  extraReducers(builder) {
+  extraReducers: (builder) => {
     builder
       .addCase(fetchRegisterUser.pending, (state) => {
         state.isAuthenticated = false;
@@ -135,16 +136,14 @@ const userSlice = createSlice({
         state.loginUserRequest = true;
       })
       .addCase(fetchLogout.fulfilled, (state) => {
-        state.data = {
-          email: '',
-          name: ''
-        };
-        state.isAuthenticated = true;
+        state.data = { email: '', name: '' };
+        state.isAuthenticated = false;
         state.loginUserRequest = false;
       });
   }
 });
 
+// Экспорт действий и селекторов
 export const { clearErrorMessage } = userSlice.actions;
 export const { selectUser, selectError, selectIsAuthenticated } =
   userSlice.selectors;

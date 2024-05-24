@@ -4,23 +4,25 @@ import {
   createSelector,
   createSlice
 } from '@reduxjs/toolkit';
-
 import { getIngredientsApi } from '@api';
 import { TConstructorIngredient, TIngredient } from '@utils-types';
 import { RootState } from '../store';
 
-type IIngredientSliceState = {
+// Типизация состояния ингредиентов
+interface IIngredientSliceState {
   ingredients: TIngredient[];
   isIngredientsLoading: boolean;
   error: string | undefined;
-};
+}
 
+// Начальное состояние
 const initialState: IIngredientSliceState = {
   ingredients: [],
   isIngredientsLoading: false,
   error: undefined
 };
 
+// Селектор для фильтрации ингредиентов по типу
 export const selectIngredientsByType = (type: string) =>
   createSelector(
     (state: RootState) => state.ingredients.ingredients,
@@ -28,11 +30,13 @@ export const selectIngredientsByType = (type: string) =>
       ingredients ? ingredients.filter((item) => item.type === type) : []
   );
 
+// Создание асинхронного thunk для получения ингредиентов
 export const fetchIngredients = createAsyncThunk(
   'ingredients/fetchIngredients',
   getIngredientsApi
 );
 
+// Создание слайса для ингредиентов
 const ingredientsSlice = createSlice({
   name: 'ingredients',
   initialState,
@@ -42,16 +46,16 @@ const ingredientsSlice = createSlice({
     },
     getIngredientsAdded: (
       state,
-      { payload }: PayloadAction<TConstructorIngredient>
+      action: PayloadAction<TConstructorIngredient>
     ) => {
-      state.ingredients.push(payload);
+      state.ingredients.push(action.payload);
     }
   },
   selectors: {
     selectIngredients: (state) => state.ingredients,
     selectIngredientsLoading: (state) => state.isIngredientsLoading
   },
-  extraReducers(builder) {
+  extraReducers: (builder) => {
     builder
       .addCase(fetchIngredients.pending, (state) => {
         state.isIngredientsLoading = true;
@@ -67,6 +71,7 @@ const ingredientsSlice = createSlice({
   }
 });
 
+// Экспорт селекторов и редьюсера
 export const { selectIngredients, selectIngredientsLoading } =
   ingredientsSlice.selectors;
 export const ingredientsReducer = ingredientsSlice.reducer;

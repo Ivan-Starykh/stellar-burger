@@ -8,13 +8,12 @@ import {
 } from '../../services/slices/usersOrderSlice';
 
 export const ProfileOrders: FC = () => {
-  /** TODO: взять переменную из стора */
-  const orders: TOrder[] = useSelector(selectUserOrders);
-	const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchUserOrdersApi());
   }, []);
+  const orders: TOrder[] = useSelector(selectUserOrders);
 
   return <ProfileOrdersUI orders={orders} />;
 };

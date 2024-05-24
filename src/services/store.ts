@@ -6,20 +6,20 @@ import {
   useSelector as selectorHook
 } from 'react-redux';
 import { ingredientsReducer } from './slices/ingredientSlice';
-// import { burgerConstructorReducer } from './slices/constructorSlice';
-// import { orderReducer } from './slices/orderSlice';
-// import { feedReducer } from './slices/feedSlice';
-// import { orderNuNumberReducer } from './slices/orderInfoSlice';
+import { burgerConstructorReducer } from './slices/constructorSlice';
+import { orderReducer } from './slices/orderSlice';
+import { feedReducer } from './slices/feedSlice';
+import { orderNuNumberReducer } from './slices/orderInfoSlice';
 import { userReducer } from './slices/userSlice';
-// import { userOrderReducer } from './slices/usersOrderSlice';
+import { userOrderReducer } from './slices/usersOrderSlice';
 
 const rootReducer = combineReducers({
   ingredients: ingredientsReducer,
-  // burgerConstructor: burgerConstructorReducer,
-  // order: orderReducer,
-  // feed: feedReducer,
-  // orderByNumber: orderNuNumberReducer,
-  // userOrders: userOrderReducer,
+  burgerConstructor: burgerConstructorReducer,
+  order: orderReducer,
+  feed: feedReducer,
+  orderByNumber: orderNuNumberReducer,
+  userOrders: userOrderReducer,
   auth: userReducer
 });
 

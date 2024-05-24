@@ -1,4 +1,24 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
+import {
+  Routes,
+  Route,
+  useLocation,
+  Navigate,
+  useNavigate
+} from 'react-router-dom';
+import { useDispatch, useSelector } from '../../services/store';
+import { fetchIngredients } from '../../services/slices/ingredientSlice';
+import { fetchGetUser } from '../../services/slices/userSlice';
+import '../../index.css';
+import styles from './app.module.css';
+
+import {
+  AppHeader,
+  IngredientDetails,
+  Modal,
+  OrderInfo,
+  ProtectedRoute
+} from '@components';
 import {
   ConstructorPage,
   Feed,
@@ -10,29 +30,15 @@ import {
   Register,
   ResetPassword
 } from '@pages';
-import '../../index.css';
-import styles from './app.module.css';
-import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
-import { ProtectedRoute } from '../protected-route';
-import {
-  Navigate,
-  Route,
-  Routes,
-  useLocation,
-  useNavigate
-} from 'react-router-dom';
-import { useDispatch, useSelector } from '../../services/store';
-import { fetchIngredients } from '../../services/slices/ingredientSlice';
-import { fetchGetUser } from '../../services/slices/userSlice';
 
-const useFetchData = () => {
+// Хук для первоначальной загрузки данных
+const useInitialDataLoad = () => {
   const dispatch = useDispatch();
-
   useEffect(() => {
-    if (localStorage.getItem('resetPassword')) {
+    const resetPassword = localStorage.getItem('resetPassword');
+    if (resetPassword) {
       localStorage.removeItem('resetPassword');
     }
-
     dispatch(fetchIngredients());
     dispatch(fetchGetUser());
   }, [dispatch]);
@@ -43,11 +49,13 @@ const App = () => {
   const background = location.state?.background;
   const navigate = useNavigate();
 
-  useFetchData();
+  // Используем хук для загрузки данных
+  useInitialDataLoad();
 
-  const handleModalClose = () => {
+  // Функция для закрытия модального окна
+  const closeModal = useCallback(() => {
     navigate(-1);
-  };
+  }, [navigate]);
 
   return (
     <div className={styles.app}>
@@ -124,7 +132,7 @@ const App = () => {
           <Route
             path='/feed/:number'
             element={
-              <Modal title='Информация о заказе' onClose={handleModalClose}>
+              <Modal title='Информация о заказе' onClose={closeModal}>
                 <OrderInfo />
               </Modal>
             }
@@ -132,7 +140,7 @@ const App = () => {
           <Route
             path='/ingredients/:id'
             element={
-              <Modal title='Детали ингредиента' onClose={handleModalClose}>
+              <Modal title='Детали ингредиента' onClose={closeModal}>
                 <IngredientDetails />
               </Modal>
             }
@@ -141,7 +149,7 @@ const App = () => {
             path='/profile/orders/:number'
             element={
               <ProtectedRoute>
-                <Modal title='Информация о заказе' onClose={handleModalClose}>
+                <Modal title='Информация о заказе' onClose={closeModal}>
                   <OrderInfo />
                 </Modal>
               </ProtectedRoute>
