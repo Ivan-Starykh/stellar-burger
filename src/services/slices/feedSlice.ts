@@ -55,7 +55,6 @@ const feedSlice = createSlice({
   }
 });
 
-// Экспорт селекторов и редьюсера
 export const {
   selectFeedIsLoading,
   selectFeeds,

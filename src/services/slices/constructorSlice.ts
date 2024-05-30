@@ -1,13 +1,10 @@
-// Импорт функций и типов из Redux Toolkit
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-// Импорт типов из utils-types
 import { TConstructorIngredient, TIngredient } from '@utils-types';
 
 // Функция для генерации уникального идентификатора
 const generateId = () => self.crypto.randomUUID();
 
-// Определение состояния среза для конструктора бургера
+// Определение состояния слайса для конструктора бургера
 type TBurgerConstructorSliceState = {
   constructorItems: {
     bun: TConstructorIngredient | null;
@@ -17,7 +14,7 @@ type TBurgerConstructorSliceState = {
   error: string | null;
 };
 
-// Начальное состояние среза для конструктора бургера
+// Начальное состояние слайса для конструктора бургера
 const initialState: TBurgerConstructorSliceState = {
   constructorItems: {
     bun: null,
@@ -27,7 +24,7 @@ const initialState: TBurgerConstructorSliceState = {
   error: null
 };
 
-// Создание среза для конструктора бургера
+// Создание слайса для конструктора бургера
 export const burgerConstructorSlice = createSlice({
   name: 'burgerConstructor',
   initialState,
@@ -80,6 +77,7 @@ export const burgerConstructorSlice = createSlice({
           (ingredient) => ingredient.id !== payload.id
         );
     },
+
     // Очистка конструктора бургера
     clearConstructor: (state) => {
       state.constructorItems.bun = null;
@@ -93,7 +91,6 @@ export const burgerConstructorSlice = createSlice({
   }
 });
 
-// Экспорт редьюсера и действий среза конструктора бургера
 export const burgerConstructorReducer = burgerConstructorSlice.reducer;
 export const {
   addIngredients,

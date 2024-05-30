@@ -48,7 +48,6 @@ const orderByNumberSlice = createSlice({
   }
 });
 
-// Экспорт селекторов и редьюсера
 export const { selectOrdersIsLoading, selectOrders } =
   orderByNumberSlice.selectors;
 export const orderNuNumberReducer = orderByNumberSlice.reducer;

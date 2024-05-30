@@ -52,7 +52,6 @@ const orderSlice = createSlice({
   }
 });
 
-// Экспорт действий и селекторов
 export const { clearOrder } = orderSlice.actions;
 export const { selectOrderIsLoading, selectOrder } = orderSlice.selectors;
 export const orderReducer = orderSlice.reducer;

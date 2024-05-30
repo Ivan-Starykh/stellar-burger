@@ -71,7 +71,6 @@ const ingredientsSlice = createSlice({
   }
 });
 
-// Экспорт селекторов и редьюсера
 export const { selectIngredients, selectIngredientsLoading } =
   ingredientsSlice.selectors;
 export const ingredientsReducer = ingredientsSlice.reducer;

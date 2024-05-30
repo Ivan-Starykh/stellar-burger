@@ -143,7 +143,6 @@ const userSlice = createSlice({
   }
 });
 
-// Экспорт действий и селекторов
 export const { clearErrorMessage } = userSlice.actions;
 export const { selectUser, selectError, selectIsAuthenticated } =
   userSlice.selectors;

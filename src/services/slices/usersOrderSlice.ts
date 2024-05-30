@@ -47,6 +47,5 @@ const userOrdersSlice = createSlice({
   }
 });
 
-// Экспорт селектора и редьюсера
 export const { selectUserOrders } = userOrdersSlice.selectors;
 export const userOrderReducer = userOrdersSlice.reducer;
