@@ -1,4 +1,3 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import {
   registerUserApi,
   loginUserApi,
@@ -7,11 +6,11 @@ import {
   logoutApi,
   TRegisterData,
   TLoginData
-} from '@api';
+} from '../../../src/utils/burger-api';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { TUser } from '@utils-types';
 import { deleteCookie, setCookie } from '../../utils/cookie';
 
-// Создание асинхронных thunk'ов для различных операций
 export const fetchRegisterUser = createAsyncThunk(
   'register/fetchRegisterUser',
   async (data: TRegisterData) =>
@@ -46,7 +45,6 @@ export const fetchLogout = createAsyncThunk('logout/fetchLogout', async () =>
   })
 );
 
-// Типизация состояния аутентификации
 type TAuthState = {
   isAuthenticated: boolean;
   data: TUser;
@@ -54,15 +52,16 @@ type TAuthState = {
   loginUserRequest: boolean;
 };
 
-// Начальное состояние
 const initialState: TAuthState = {
   isAuthenticated: false,
-  data: { name: '', email: '' },
+  data: {
+    name: '',
+    email: ''
+  },
   error: undefined,
   loginUserRequest: false
 };
 
-// Создание слайса для аутентификации пользователя
 const userSlice = createSlice({
   name: 'auth',
   initialState,
@@ -77,7 +76,7 @@ const userSlice = createSlice({
     selectError: (state) => state.error,
     selectloginRequest: (state) => state.loginUserRequest
   },
-  extraReducers: (builder) => {
+  extraReducers(builder) {
     builder
       .addCase(fetchRegisterUser.pending, (state) => {
         state.isAuthenticated = false;
@@ -136,8 +135,11 @@ const userSlice = createSlice({
         state.loginUserRequest = true;
       })
       .addCase(fetchLogout.fulfilled, (state) => {
-        state.data = { email: '', name: '' };
-        state.isAuthenticated = false;
+        state.data = {
+          email: '',
+          name: ''
+        };
+        state.isAuthenticated = true;
         state.loginUserRequest = false;
       });
   }

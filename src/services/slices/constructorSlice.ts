@@ -1,11 +1,10 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+
 import { TConstructorIngredient, TIngredient } from '@utils-types';
 
-// Функция для генерации уникального идентификатора
-const generateId = () => self.crypto.randomUUID();
+const randomId = () => crypto.randomUUID();
 
-// Определение состояния слайса для конструктора бургера
-type TBurgerConstructorSliceState = {
+export type TBurgerConstructorSliceState = {
   constructorItems: {
     bun: TConstructorIngredient | null;
     ingredients: TConstructorIngredient[];
@@ -14,8 +13,7 @@ type TBurgerConstructorSliceState = {
   error: string | null;
 };
 
-// Начальное состояние слайса для конструктора бургера
-const initialState: TBurgerConstructorSliceState = {
+export const initialState: TBurgerConstructorSliceState = {
   constructorItems: {
     bun: null,
     ingredients: []
@@ -24,12 +22,10 @@ const initialState: TBurgerConstructorSliceState = {
   error: null
 };
 
-// Создание слайса для конструктора бургера
 export const burgerConstructorSlice = createSlice({
   name: 'burgerConstructor',
   initialState,
   reducers: {
-    // Добавление ингредиента в конструктор
     addIngredients: {
       reducer: (state, { payload }: PayloadAction<TConstructorIngredient>) => {
         if (payload.type === 'bun') {
@@ -38,16 +34,16 @@ export const burgerConstructorSlice = createSlice({
           state.constructorItems.ingredients.push(payload);
         }
       },
-      // Подготовка данных перед добавлением ингредиента
       prepare: (ingredient: TIngredient) => ({
-        payload: { ...ingredient, id: generateId() }
+        payload: { ...ingredient, id: randomId() }
       })
     },
-    // Перемещение ингредиента вверх
     ingredientsToUp: (state, { payload }: PayloadAction<number>) => {
       const currentIngredient = state.constructorItems.ingredients[payload];
+
       const neighbourIngredient =
         state.constructorItems.ingredients[payload - 1];
+
       state.constructorItems.ingredients.splice(
         payload - 1,
         2,
@@ -55,11 +51,12 @@ export const burgerConstructorSlice = createSlice({
         neighbourIngredient
       );
     },
-    // Перемещение ингредиента вниз
     ingredientsToDown: (state, { payload }: PayloadAction<number>) => {
       const currentIngredient = state.constructorItems.ingredients[payload];
+
       const neighbourIngredient =
         state.constructorItems.ingredients[payload + 1];
+
       state.constructorItems.ingredients.splice(
         payload,
         2,
@@ -67,31 +64,28 @@ export const burgerConstructorSlice = createSlice({
         currentIngredient
       );
     },
-    // Удаление ингредиента из конструктора
     removeIngredient: (
       state,
       { payload }: PayloadAction<TConstructorIngredient>
     ) => {
       state.constructorItems.ingredients =
         state.constructorItems.ingredients.filter(
-          (ingredient) => ingredient.id !== payload.id
+          (ingredient) => ingredient.id != payload.id
         );
     },
-
-    // Очистка конструктора бургера
     clearConstructor: (state) => {
       state.constructorItems.bun = null;
       state.constructorItems.ingredients = [];
       state.isIngredientsLoading = false;
     }
   },
-  // Селектор для получения данных конструктора бургера
   selectors: {
     selectConstructorBurger: (state) => state
   }
 });
 
 export const burgerConstructorReducer = burgerConstructorSlice.reducer;
+export const { selectConstructorBurger } = burgerConstructorSlice.selectors;
 export const {
   addIngredients,
   ingredientsToUp,
@@ -99,4 +93,3 @@ export const {
   removeIngredient,
   clearConstructor
 } = burgerConstructorSlice.actions;
-export const { selectConstructorBurger } = burgerConstructorSlice.selectors;

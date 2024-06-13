@@ -4,25 +4,23 @@ import {
   createSelector,
   createSlice
 } from '@reduxjs/toolkit';
-import { getIngredientsApi } from '@api';
+
+import { getIngredientsApi } from '../../../src/utils/burger-api';
 import { TConstructorIngredient, TIngredient } from '@utils-types';
 import { RootState } from '../store';
 
-// Типизация состояния ингредиентов
-interface IIngredientSliceState {
+export type TIngredientSliceState = {
   ingredients: TIngredient[];
   isIngredientsLoading: boolean;
   error: string | undefined;
-}
+};
 
-// Начальное состояние
-const initialState: IIngredientSliceState = {
+export const initialState: TIngredientSliceState = {
   ingredients: [],
   isIngredientsLoading: false,
   error: undefined
 };
 
-// Селектор для фильтрации ингредиентов по типу
 export const selectIngredientsByType = (type: string) =>
   createSelector(
     (state: RootState) => state.ingredients.ingredients,
@@ -30,13 +28,11 @@ export const selectIngredientsByType = (type: string) =>
       ingredients ? ingredients.filter((item) => item.type === type) : []
   );
 
-// Создание асинхронного thunk для получения ингредиентов
 export const fetchIngredients = createAsyncThunk(
   'ingredients/fetchIngredients',
   getIngredientsApi
 );
 
-// Создание слайса для ингредиентов
 const ingredientsSlice = createSlice({
   name: 'ingredients',
   initialState,
@@ -46,16 +42,16 @@ const ingredientsSlice = createSlice({
     },
     getIngredientsAdded: (
       state,
-      action: PayloadAction<TConstructorIngredient>
+      { payload }: PayloadAction<TConstructorIngredient>
     ) => {
-      state.ingredients.push(action.payload);
+      state.ingredients.push(payload);
     }
   },
   selectors: {
     selectIngredients: (state) => state.ingredients,
     selectIngredientsLoading: (state) => state.isIngredientsLoading
   },
-  extraReducers: (builder) => {
+  extraReducers(builder) {
     builder
       .addCase(fetchIngredients.pending, (state) => {
         state.isIngredientsLoading = true;
@@ -73,4 +69,6 @@ const ingredientsSlice = createSlice({
 
 export const { selectIngredients, selectIngredientsLoading } =
   ingredientsSlice.selectors;
+export const { getIngredients, getIngredientsAdded } = ingredientsSlice.actions;
+
 export const ingredientsReducer = ingredientsSlice.reducer;

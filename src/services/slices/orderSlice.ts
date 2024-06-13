@@ -1,28 +1,25 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { orderBurgerApi } from '@api';
+
+import { orderBurgerApi } from '../../../src/utils/burger-api';
 import { TOrder } from '@utils-types';
 
-// Типизация состояния заказа
-type TOrderSliceState = {
+export type TOrderSliceState = {
   order: TOrder | null;
   orderIsLoading: boolean;
   error: string | undefined;
 };
 
-// Начальное состояние
-const initialState: TOrderSliceState = {
+export const initialState: TOrderSliceState = {
   order: null,
   orderIsLoading: false,
   error: undefined
 };
 
-// Создание асинхронного thunk для размещения заказа
 export const fetchOrderBurgerApi = createAsyncThunk(
   'postOrder/fetchOrderBurgerApi',
   async (data: string[]) => orderBurgerApi(data)
 );
 
-// Создание слайса для заказов
 const orderSlice = createSlice({
   name: 'order',
   initialState,
@@ -36,7 +33,7 @@ const orderSlice = createSlice({
     selectOrderIsLoading: (state) => state.orderIsLoading,
     selectOrder: (state) => state.order
   },
-  extraReducers: (builder) => {
+  extraReducers(builder) {
     builder
       .addCase(fetchOrderBurgerApi.pending, (state) => {
         state.orderIsLoading = true;

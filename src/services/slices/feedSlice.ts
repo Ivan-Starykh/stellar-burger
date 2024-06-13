@@ -1,18 +1,17 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getFeedsApi } from '@api';
+
+import { getFeedsApi } from '../../../src/utils/burger-api';
 import { TOrder } from '@utils-types';
 
-// Типизация состояния для слайса фидов
-interface TFeedSliceState {
+export type TFeedSliceState = {
   feeds: TOrder[];
   feedIsLoading: boolean;
   total: number;
   totalToday: number;
   error: string | undefined;
-}
+};
 
-// Начальное состояние для слайса фидов
-const initialState: TFeedSliceState = {
+export const initialState: TFeedSliceState = {
   feeds: [],
   feedIsLoading: false,
   total: 0,
@@ -20,13 +19,11 @@ const initialState: TFeedSliceState = {
   error: undefined
 };
 
-// Создание асинхронного thunk для получения фидов
 export const fetchFeedsApi = createAsyncThunk(
   'feed/fetchFeedsApi',
   getFeedsApi
 );
 
-// Создание слайса для фидов
 const feedSlice = createSlice({
   name: 'feed',
   initialState,
@@ -37,7 +34,7 @@ const feedSlice = createSlice({
     selectTotal: (state) => state.total,
     selectTotalToday: (state) => state.totalToday
   },
-  extraReducers: (builder) => {
+  extraReducers(builder) {
     builder
       .addCase(fetchFeedsApi.pending, (state) => {
         state.feedIsLoading = true;

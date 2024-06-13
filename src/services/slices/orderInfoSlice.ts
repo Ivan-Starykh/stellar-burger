@@ -1,28 +1,25 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getOrderByNumberApi } from '@api';
+
+import { getOrderByNumberApi } from '../../../src/utils/burger-api';
 import { TOrder } from '@utils-types';
 
-// Типизация состояния заказа по номеру
-type TOrderByNumberSliceState = {
+export type TOrderByNumberSliceState = {
   orders: TOrder[];
   orderIsLoading: boolean;
   error: string | undefined;
 };
 
-// Начальное состояние
-const initialState: TOrderByNumberSliceState = {
+export const initialState: TOrderByNumberSliceState = {
   orders: [],
   orderIsLoading: false,
   error: undefined
 };
 
-// Создание асинхронного thunk для получения заказа по номеру
 export const fetchOrderByNumber = createAsyncThunk(
   'getOrderByNumber/fetchOrderByNumber',
   async (number: number) => getOrderByNumberApi(number)
 );
 
-// Создание слайса для заказов по номеру
 const orderByNumberSlice = createSlice({
   name: 'orderByNumber',
   initialState,
@@ -31,7 +28,7 @@ const orderByNumberSlice = createSlice({
     selectOrdersIsLoading: (state) => state.orderIsLoading,
     selectOrders: (state) => state.orders
   },
-  extraReducers: (builder) => {
+  extraReducers(builder) {
     builder
       .addCase(fetchOrderByNumber.pending, (state) => {
         state.orderIsLoading = true;
@@ -39,7 +36,6 @@ const orderByNumberSlice = createSlice({
       .addCase(fetchOrderByNumber.rejected, (state, action) => {
         state.orderIsLoading = false;
         state.error = action.error.message;
-        console.log(state.error);
       })
       .addCase(fetchOrderByNumber.fulfilled, (state, action) => {
         state.orderIsLoading = false;
